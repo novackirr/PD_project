@@ -1,0 +1,127 @@
+from .models import User
+from .extra_logic import EmailSenderMixin, user_urlsafe_decode, CustomObtainAuthToken
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Group
+from .serializers import UserSerializer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.authentication import TokenAuthentication
+from django.contrib.auth import login, authenticate
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from django.views.generic.base import View
+from django.shortcuts import render
+# Create your views here.
+
+
+class Register(APIView, EmailSenderMixin):
+    '''Регистрация с использованием email'''
+    template_mail = 'users\\user_verification_message.html'
+    subject_message = 'Подтверждение верификации'
+    verified_url = r'users/reg/success'
+
+    def post(self, request):
+        '''Обработка формы регистрации'''
+        serializer = UserSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response({'data': request.data, 'errors': serializer.errors})
+        else:
+            serializer.save()
+            us = User.objects.all().get(email=serializer.validated_data['email'])
+            us.groups.add(Group.objects.get(name=request.POST['groups']))
+            super().send_mail_verify(request, us.email)
+            return Response({'success_message': 'Вы успешно зарегистрировались, подтвердите почту!'})
+
+    def get_extra_context_html_message(self, *args, **kwargs):
+        return {'url_delete': super().prepare_url_verification( kwargs['request'], kwargs['user'], 'users\\reg\\user_delete')}
+
+
+
+class VerifyEmail(APIView):
+    '''Пользователю приходит письмо с ссылками, и этот класс для обработки ссылки на подтверждение почты'''
+    def get(self, request, *args, **kwargs):
+        user = user_urlsafe_decode(kwargs['uid'])
+        if user is not None and default_token_generator.check_token(user, kwargs['token']):
+            user.email_verified = True
+            user.save()
+            return Response({'message': f'Ваша почта подтверждена, {user.first_name}!'})
+        return Response({'message': f'Ссылка недействительна!'})
+        
+    
+class PasswordReset(APIView, EmailSenderMixin):
+    '''Обработка сброса пароля'''
+    template_mail = 'users\\password_reset_messege.html'
+    subject_message = 'Сброс пароля'
+    verified_url = r'users/password_reset/new_password'
+
+    def post(self, request):
+        try:
+            user = User.objects.all().get(email=request.data['email'])   
+            self.send_mail_verify(request, user.email)         
+        except:
+            return Response({'message': 'Пользователь с таким email не найден!'})
+        return Response({'message': 'Сообщение отправлено на почту!'})
+
+
+class PasswordResetNewPassword(APIView):
+    '''Для сброса пароля пользователю приходит письмо ссылкой на страницу с формой для изменения пароля, он переходит на неё и вид форму 
+    для сброса пароля, данный класс сохраняет пользователя, если токен валиден, иначе нет'''
+    def get(self, request, *args, **kwargs): 
+        return Response()
+
+    
+    def post(self, request, *args, **kwargs):
+        user = user_urlsafe_decode(kwargs['uid'])
+        if user is not None and default_token_generator.check_token(user, kwargs['token']):
+            user.password = make_password(request.data['password'])
+            if user.email_verified is False:
+                user.email_verified = True
+                user.save()
+                return Response({'message': 'Пароль успешно изменён! Ваша почта подтверждена!'})
+            user.save()
+        else:
+            return Response({'message': 'Ссылка недействительна!'})
+        return Response({'message': 'Пароль успешно изменён!'})
+
+
+class UserMistakeRegistration(APIView):
+    '''Если пользователь не регистрировался на сайте, ему необходимо перейти по второй ссылке в письме, этот класса 
+    отвечает за обработку данной ссылки'''
+    def get(self, request, *args, **kwargs): 
+        user = user_urlsafe_decode(kwargs['uid'])
+        if user is not None and default_token_generator.check_token(user, kwargs['token']):
+            User.objects.filter(id=user.id).delete()
+        return Response({'message': 'Спасибо за переход по ссылке, если хотите можете зарегистрироваться на нашем сайте!'})
+
+
+class LoginView(APIView):
+    '''Класс для входа, будет дорабатываться'''
+    
+    def post(self, request):
+        user = authenticate(username=request.data['email'], password=request.data['password'])
+        if user is None:
+            return Response({'message': 'Пользователь с такими данными не найден!'})
+        login(request, user)
+        return Response({'message': 'Вы успешно вошли в учётную запись!'})
+
+
+
+
+class TestView(APIView):
+
+    def post(self, request):
+        print(request.META['Created-By'])
+        if request.user.is_authenticated:
+            return Response({'message': 'Это успех, братишка!'})
+        return Response({'message': 'Вы не зарегистрированы!'})
+        
+
+
+class Test(View):
+
+    def get(self, request):
+        return render(request, 'users\\test_template.html')
+
+    def post(self, request):
+        return render(request, 'users\\test_template.html')
