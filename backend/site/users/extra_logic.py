@@ -52,6 +52,7 @@ class EmailSenderMixin:
 class CustomObtainAuthToken(ObtainAuthToken):
     serializer_class = CustomTokenSerializer
 
+
 def user_urlsafe_decode(decode_data: str) -> None|User:
     try:
         user_pk = urlsafe_base64_decode(decode_data).decode()
@@ -59,5 +60,4 @@ def user_urlsafe_decode(decode_data: str) -> None|User:
     except:
         user = None
     return user
-
 
