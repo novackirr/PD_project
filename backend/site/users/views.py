@@ -1,5 +1,6 @@
 from .models import User
-from .extra_logic import EmailSenderMixin, user_urlsafe_decode, CustomObtainAuthToken
+from .extra_logic import *
+from users.permissions import *
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
@@ -12,6 +13,8 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 from django.views.generic.base import View
 from django.shortcuts import render
+from rest_framework.authtoken.models import Token
+
 # Create your views here.
 
 
@@ -95,33 +98,35 @@ class UserMistakeRegistration(APIView):
         return Response({'message': 'Спасибо за переход по ссылке, если хотите можете зарегистрироваться на нашем сайте!'})
 
 
-class LoginView(APIView):
-    '''Класс для входа, будет дорабатываться'''
-    
+class LoginView(CustomObtainAuthToken):
+    '''Класс для входа'''
+    pass
+
+
+class Logout(APIView):
+    "Уничтожает токен в бд"
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
-        user = authenticate(username=request.data['email'], password=request.data['password'])
-        if user is None:
-            return Response({'message': 'Пользователь с такими данными не найден!'})
-        login(request, user)
-        return Response({'message': 'Вы успешно вошли в учётную запись!'})
-
-
+        Token.objects.get(key=request.auth).delete()
+        return Response({'message': 'Вы успешно вышли!'})
 
 
 class TestView(APIView):
+    "Вьюха для проверки входа"
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated, IsEmailVerifed]
 
     def post(self, request):
-        print(request.META['Created-By'])
-        if request.user.is_authenticated:
-            return Response({'message': 'Это успех, братишка!'})
-        return Response({'message': 'Вы не зарегистрированы!'})
+        #print(request.META['Created-By'])
+        #ex = TokenAuthentication()
+        #print(ex.authenticate(request))
+        #print(user)
+        #if request.user.is_authenticated:
+        #return Response({'message': 'Это успех, братишка!'})
+        return Response({'message': 'Вы зарегистрированы!'})
         
 
 
-class Test(View):
 
-    def get(self, request):
-        return render(request, 'users\\test_template.html')
-
-    def post(self, request):
-        return render(request, 'users\\test_template.html')
