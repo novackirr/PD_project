@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 
 createApp(App).use(store).use(router).mount('#app')
 
-axios.defaults.baseURL = 'http://localhost:8000/';
+axios.defaults.baseURL = 'http://192.168.0.103:8000/';
 
 const app = createApp(App);
 

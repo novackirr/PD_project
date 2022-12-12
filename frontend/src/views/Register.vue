@@ -6,14 +6,29 @@
             
                 <form @submit.prevent="submitForm">
                     <div class="mb-3">
-                        <label class="form-label">Никнейм</label>
-                        <input type="text" name="username" class="form-control" v-model="username">
-                    </div>
-                    <div class="mb-3">
                         <label class="form-label">Электронная почта</label>
                         <input type="email" name="email" class="form-control" v-model="email">
                     </div>
-
+                    <div class="mb-3">
+                        <label class="form-label">Никнейм</label>
+                        <input type="text" name="username" class="form-control" v-model="username">
+                    </div>
+                                        <div class="mb-3">
+                        <label class="form-label">Фамилия</label>
+                        <input type="text" name="last_name" class="form-control" v-model="last_name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Имя</label>
+                        <input type="text" name="first_name" class="form-control" v-model="first_name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Отчество</label>
+                        <input type="text" name="middle_name" class="form-control" v-model="middle_name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Группа</label>
+                        <input type="text" name="student_group" class="form-control" v-model="student_group">
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">Пароль</label>
                         <input type="password" name="password1" class="form-control" v-model="password1">
@@ -47,6 +62,10 @@
         data() {
             return {
                 username: '',
+                first_name: '',
+                last_name: '',
+                middle_name: '',
+                student_group: '',
                 email: '',
                 password1: '',
                 password2: '',
@@ -72,12 +91,16 @@
                 if (!this.errors.length) {
                     this.$store.commit('setIsLoading', true)
                     const formData = {
+                        first_name: this.first_name,
+                        last_name: this.last_name,
+                        middle_name: this.middle_name,
+                        student_group: this.student_group,
                         username: this.username,
                         email: this.email,
                         password: this.password1
                     }
                     await axios
-                        .post('/api/v1/users/', formData)
+                        .post('/users/reg/', formData)
                         .then(response => {
                             toast({
                                 message: 'Account was created, please log in',

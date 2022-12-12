@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-l#+_diik@nb9n7e_*lj=xwi_c@m6m0id=72-3g09tq8h1f8au9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '192.168.0.103'
+]
 
 
 # Application definition
@@ -84,10 +86,10 @@ WSGI_APPLICATION = 'djsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'generatordrf',
-        'USER': 'root',
+        'NAME': 'std_1544_pdproject',
+        'USER': 'std_1544_pdproject',
         'PASSWORD': 'A01082002z',
-        'HOST': '127.0.0.1',
+        'HOST': 'std-mysql',
         'PORT': '3306',
     }
 }
@@ -145,27 +147,16 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = 'ввести_сюда_свой_email'
 EMAIL_HOST_PASSWORD = 'пароль_от_приложения'
 
-REST_FRAMEWORK = {
-    
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.AllowAny',
-        
-        
-    )
-}
-
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
     'http://localhost:8080',
+    'http://localhost:8000',
+    'http://192.168.0.103:8000',
+    'http://192.168.0.103:8080'
+
 )
 
 CORS_ALLOW_METHODS = [

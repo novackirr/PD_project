@@ -27,7 +27,10 @@ class Register(APIView, EmailSenderMixin):
     def post(self, request):
         '''Обработка формы регистрации'''
         serializer = UserSerializer(data=request.data)
+
         if not serializer.is_valid():
+            print('ser', serializer.is_valid())
+            print(serializer.errors)
             return Response({'data': request.data, 'errors': serializer.errors})
         else:
             serializer.save()
@@ -61,7 +64,10 @@ class PasswordReset(APIView, EmailSenderMixin):
     def post(self, request):
         try:
             user = User.objects.all().get(email=request.data['email'])   
-            self.send_mail_verify(request, user.email)         
+            try:
+                self.send_mail_verify(request, user.email)         
+            except:
+                return Response({'message': 'Письмо не было отправлено!'})        
         except:
             return Response({'message': 'Пользователь с таким email не найден!'})
         return Response({'message': 'Сообщение отправлено на почту!'})
@@ -116,7 +122,7 @@ class Logout(APIView):
 class TestView(APIView):
     "Вьюха для проверки входа"
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsEmailVerifed]
+    permission_classes = [IsEmailVerifedAndUserAuth]
 
     def post(self, request):
         #print(request.META['Created-By'])
