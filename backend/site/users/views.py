@@ -26,7 +26,10 @@ class Register(APIView, EmailSenderMixin):
 
     def post(self, request):
         '''Обработка формы регистрации'''
+        group_name = request.data['groups']
+        request.data.pop('groups')
         serializer = UserSerializer(data=request.data)
+        print(request.data)
 
         if not serializer.is_valid():
             print('ser', serializer.is_valid())
@@ -35,7 +38,7 @@ class Register(APIView, EmailSenderMixin):
         else:
             serializer.save()
             us = User.objects.all().get(email=serializer.validated_data['email'])
-            us.groups.add(Group.objects.get(name=request.POST['groups']))
+            us.groups.add(Group.objects.get(name=group_name))
             super().send_mail_verify(request, us.email)
             return Response({'success_message': 'Вы успешно зарегистрировались, подтвердите почту!'})
 
