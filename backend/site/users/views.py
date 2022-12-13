@@ -29,11 +29,8 @@ class Register(APIView, EmailSenderMixin):
         group_name = request.data['groups']
         request.data.pop('groups')
         serializer = UserSerializer(data=request.data)
-        print(request.data)
 
         if not serializer.is_valid():
-            print('ser', serializer.is_valid())
-            print(serializer.errors)
             return Response({'data': request.data, 'errors': serializer.errors})
         else:
             serializer.save()

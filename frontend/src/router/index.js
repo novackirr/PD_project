@@ -4,6 +4,7 @@ import Info from '@/views/Info.vue'
 import Account from '@/views/Account.vue'
 import LogIn from '@/views/LogIn.vue'
 import Register from '@/views/Register.vue'
+import VerifyEmail from '@/views/VerifyEmail.vue'
 import store from "@/store"
 
 const routes = [
@@ -31,6 +32,11 @@ const routes = [
     path: '/register',
     name: 'register',
     component: Register
+  },
+  {
+    path: '/verifyemail/:uid/:token',
+    name: 'verifyemail',
+    component: VerifyEmail
   }
 ]
 
