@@ -18,7 +18,7 @@ class Register(APIView, EmailSenderMixin):
     '''Регистрация с использованием email'''
     template_mail = r'users/user_verification_message.html'
     subject_message = 'Подтверждение верификации'
-    verified_url = r'users/reg/success'
+    verified_url = r'verifyemail'
 
     def post(self, request):
         '''Обработка формы регистрации'''
@@ -35,7 +35,7 @@ class Register(APIView, EmailSenderMixin):
             return Response({'success_message': 'Вы успешно зарегистрировались, подтвердите почту!'})
 
     def get_extra_context_html_message(self, *args, **kwargs):
-        return {'url_delete': super().prepare_url_verification( kwargs['request'], kwargs['user'], r'users/reg/user_delete')}
+        return {'url_delete': super().prepare_url_verification( kwargs['request'], kwargs['user'], r'rejectregister')}
 
 
 
@@ -54,7 +54,7 @@ class PasswordReset(APIView, EmailSenderMixin):
     '''Обработка сброса пароля'''
     template_mail = 'users\\password_reset_messege.html'
     subject_message = 'Сброс пароля'
-    verified_url = r'users/password_reset/new_password'
+    verified_url = r'resetpassword'
 
     def post(self, request):
         try:
