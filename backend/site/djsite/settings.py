@@ -167,3 +167,6 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
+
+
+DOMAIN_IN_EMAIL_MESSAGE = 'localhost:3000'
