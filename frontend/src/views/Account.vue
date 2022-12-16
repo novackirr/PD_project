@@ -66,7 +66,7 @@ export default {
             async getClient() {
                 this.$store.commit('setIsLoading', true)
                 await axios
-                    .get(`/users/profile`, {
+                    .get(`/users/profile/`, {
                         headers: {'Authorization': 'Token ' + this.$store.state.token}
 
                     })

@@ -35,7 +35,7 @@ class Register(APIView, EmailSenderMixin):
             return Response({'success_message': 'Вы успешно зарегистрировались, подтвердите почту!'})
 
     def get_extra_context_html_message(self, *args, **kwargs):
-        return {'url_delete': super().prepare_url_verification( kwargs['request'], kwargs['user'], r'users/reg/user_delete')}
+        return {'url_delete': super().prepare_url_verification( kwargs['request'], kwargs['user'], r'rejectregister')}
 
 
 
@@ -54,7 +54,7 @@ class PasswordReset(APIView, EmailSenderMixin):
     '''Обработка сброса пароля'''
     template_mail = 'users\\password_reset_messege.html'
     subject_message = 'Сброс пароля'
-    verified_url = r'users/password_reset/new_password'
+    verified_url = r'resetpassword'
 
     def post(self, request):
         try:

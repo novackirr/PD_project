@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-l#+_diik@nb9n7e_*lj=xwi_c@m6m0id=72-3g09tq8h1f8au9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# Frontend and Backend host urls
 SERVER_URL = '192.168.1.3'
 BACKEND_PORT = '8000'
 FRONTEND_PORT = '8080'
@@ -52,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
+    'test_generator.apps.TestGeneratorConfig',
     'rest_framework',
     'corsheaders',
 ]
@@ -96,8 +96,8 @@ WSGI_APPLICATION = 'djsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'std_1544_pdproject',
-        'USER': 'std_1544_pdproject',
+        'NAME': 'std_1544_pdproject2',
+        'USER': 'std_1544_pdproject2',
         'PASSWORD': 'A01082002z',
         'HOST': 'std-mysql.ist.mospolytech.ru',
         'PORT': '3306',
@@ -164,6 +164,8 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
     'http://localhost:8080',
     'http://localhost:8000',
+    'http://192.168.0.103:8000',
+    'http://192.168.0.103:8080',
     BACKEND_URL,
     FRONTEND_URL
 
