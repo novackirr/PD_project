@@ -20,6 +20,7 @@
                         <div class="control">
                             <button type="submit" class="btn btn-primary">Войти</button>
                         </div>
+                        <div> {{tokeno}}</div>
                     </div>
                 </form>
             </div>

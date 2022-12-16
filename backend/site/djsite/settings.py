@@ -96,8 +96,8 @@ WSGI_APPLICATION = 'djsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'std_1544_pdproject2',
-        'USER': 'std_1544_pdproject2',
+        'NAME': 'std_1544_pdproject3',
+        'USER': 'std_1544_pdproject3',
         'PASSWORD': 'A01082002z',
         'HOST': 'std-mysql.ist.mospolytech.ru',
         'PORT': '3306',

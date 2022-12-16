@@ -5,6 +5,8 @@ import Account from '@/views/Account.vue'
 import LogIn from '@/views/LogIn.vue'
 import Register from '@/views/Register.vue'
 import VerifyEmail from '@/views/VerifyEmail.vue'
+import Generate from '@/views/Generate.vue'
+import StudentsDo from '@/views/StudentsDo.vue'
 import store from "@/store"
 
 const routes = [
@@ -35,6 +37,22 @@ const routes = [
     path: '/register',
     name: 'register',
     component: Register
+  },
+  {
+    path: '/generate',
+    name: 'generate',
+    component: Generate,
+    meta: {
+      requireLogin: true
+    }
+  },
+  {
+    path: '/studentsdo',
+    name: 'studentsdo',
+    component: StudentsDo,
+    meta: {
+      requireLogin: true
+    }
   },
   {
     path: '/verifyemail/',

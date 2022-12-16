@@ -42,7 +42,8 @@ export default {
     name: 'Main',
     data() {
         return {
-            profile: []
+            profile: [],
+            tokeno: ''
         }
     },
     mounted() {
@@ -50,6 +51,7 @@ export default {
         },
         methods: {
             async deleteClient() {
+                
                 this.$store.commit('setIsLoading', true)
                 const clientID = this.$route.params.id
                 await axios
@@ -66,7 +68,7 @@ export default {
             async getClient() {
                 this.$store.commit('setIsLoading', true)
                 await axios
-                    .get(`/users/profile/`, {
+                    .get('/users/profile/', {
                         headers: {'Authorization': 'Token ' + this.$store.state.token}
 
                     })

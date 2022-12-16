@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import TestGenerator
+from .views import TestGenerate, TestShow
 
 urlpatterns = [
-    path('generate/', TestGenerator.as_view())
+    path('generate/', TestGenerate.as_view()),
+    path('show_test/', TestShow.as_view())
 ]

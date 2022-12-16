@@ -10,6 +10,9 @@ from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
+from django.http import JsonResponse
+from test_generator.models import Option
+from django.db.models import Q
 
 # Create your views here.
 
@@ -147,3 +150,19 @@ class UserProfile(APIView):
                     }
         return Response(user_data)
 
+class UsersListHasNoOption(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsEmailVerifedAndUserAuth, IsTeacher]
+
+    def post(self, request):
+        groups = []
+        users_id_have_option = []
+        users_have_option = list(Option.objects.all().values_list('user__id'))
+        for a in request.user.groups.values_list('name'):
+            groups += [a[0]]
+        for id in users_have_option:
+            users_id_have_option += id
+        users_list = list(User.objects.all()
+                        .filter(~Q(student_group='') & ~Q(id__in=users_id_have_option))
+                        .values('id', 'email', 'first_name', 'middle_name', 'last_name', 'student_group'))
+        return JsonResponse({'data': users_list})

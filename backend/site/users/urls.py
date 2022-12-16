@@ -10,8 +10,9 @@ urlpatterns = [
     path('login/test/', TestView.as_view()),
 
     path('logout/', Logout.as_view()),
-    path('profile', UserProfile.as_view()),
-    
+    path('profile/', UserProfile.as_view()),
+
+    path('user_list/', UsersListHasNoOption.as_view()),
 
     path('password_reset/', PasswordReset.as_view()),
     path('password_reset/new_password/<str:uid>/<str:token>/',  PasswordResetNewPassword.as_view())

@@ -13,3 +13,14 @@ class IsEmailVerifedAndUserAuth(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return True
+
+class IsTeacher(IsEmailVerifedAndUserAuth):
+    message = "Вы не являетесь учителем!"
+
+    def has_permission(self, request, view):
+        groups = []
+        for a in request.user.groups.values_list('name'):
+            groups += [a[0]]
+        if 'Преподаватель' in groups:
+            return True
+        return False
