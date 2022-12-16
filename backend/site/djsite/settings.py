@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-l#+_diik@nb9n7e_*lj=xwi_c@m6m0id=72-3g09tq8h1f8au9
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '192.168.0.103'
+    '192.168.0.103',
+    '127.0.0.1'
 ]
 
 
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
+    'test_generator.apps.TestGeneratorConfig',
     'rest_framework',
     'corsheaders',
 ]
@@ -86,10 +88,10 @@ WSGI_APPLICATION = 'djsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'std_1544_pdproject',
-        'USER': 'std_1544_pdproject',
+        'NAME': 'generatordrf',
+        'USER': 'root',
         'PASSWORD': 'A01082002z',
-        'HOST': 'std-mysql',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }
