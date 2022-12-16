@@ -18,7 +18,7 @@ class Register(APIView, EmailSenderMixin):
     '''Регистрация с использованием email'''
     template_mail = r'users/user_verification_message.html'
     subject_message = 'Подтверждение верификации'
-    verified_url = r'users/reg/success'
+    verified_url = r'verifyemail'
 
     def post(self, request):
         '''Обработка формы регистрации'''
@@ -131,12 +131,13 @@ class TestView(APIView):
 
 class UserProfile(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsEmailVerifedAndUserAuth]
+    # permission_classes = [IsEmailVerifedAndUserAuth]
 
     def get(self, request):
         user = request.user
         role = user.groups.all()[0]
         user_data = {
+                        'id': user.id,
                         'first_name': user.first_name, 
                         'last_name': user.last_name, 
                         'role': str(role),

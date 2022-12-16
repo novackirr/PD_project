@@ -2,46 +2,44 @@
     <div class="container">
         <div class="columns">
             <div class="column is-4 is-offset-4">
-                <h1 class="title mb-3">Sign up</h1>
-
+                <h1 class="title mb-3">Регистрация</h1>
                 <form @submit.prevent="submitForm">
-                    <div class="mb-3">
-                        <label class="form-label">Электронная почта</label>
-                        <input required type="email" name="email" class="form-control" v-model="email">
+                    
+                    <div class="form-floating mb-3">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" v-model="email">
+                        <label for="email">Электронная почта</label>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Фамилия</label>
-                        <input required type="text" name="last_name" class="form-control" v-model="last_name">
+                    <div class="form-floating mb-3">
+                        <input required type="text" name="last_name" class="form-control" placeholder="Иванов" id="last_name" v-model="last_name">
+                        <label for="last_name">Фамилия</label>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Имя</label>
-                        <input required type="text" name="first_name" class="form-control" v-model="first_name">
+                    <div class="form-floating mb-3">
+                        <input required type="text" name="first_name" class="form-control" placeholder="Иван" id="first_name" v-model="first_name">
+                        <label for="first_name">Имя</label>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Отчество</label>
-                        <input required type="text" name="middle_name" class="form-control" v-model="middle_name">
+                    <div class="form-floating mb-3">
+                        <input required type="text" name="middle_name" class="form-control" placeholder="Иванович" id="middle_name" v-model="middle_name">
+                        <label for="middle_name">Отчество</label>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Роль</label>
-                        <select required class="form-select" name="groups" v-model="selectedGroup">
+                    <div class="form-floating mb-3">
+                        <select id="floatingSelect" required class="form-select" name="groups" v-model="selectedGroup">
                             <option disabled selected>Выберите роль</option>
                             <option v-for="group in groups" :value="group">{{ group.name }}</option>
                         </select>
+                        <label for="floatingSelect">Роль</label>
                     </div>
-                    <div v-if="selectedGroup['id']===1" class="mb-3">
-                        <label class="form-label">Группа</label>
-                        <input required type="text" name="student_group" pattern="[0-9]{3}-[0-9]{3}" class="form-control" 
-                        title="Группа должна быть в формате 111-111, проверьте лишние пробелы" v-model="student_group">
-                        <div class="form-text">Группа в формате 111-111</div>
+                    <div v-if="selectedGroup['id']===1" class="form-floating mb-3">
+                        <input required type="text" name="student_group" class="form-control" placeholder="191-363" id="student_group" v-model="student_group">
+                        <label for="student_group">Группа</label>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Пароль</label>
-                        <input required type="password" name="password1" class="form-control" v-model="password1">
+                    <div class="form-floating mb-3">
+                        <input required type="password" name="password1" class="form-control" placeholder="******" id="password1" v-model="password1">
+                        <label for="password1">Пароль</label>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Повторите пароль</label>
-                        <input required type="password" name="password2" class="form-control" v-model="password2">
+                    <div class="form-floating mb-3">
+                        <input required type="password" name="password2" class="form-control" placeholder="******" id="password2" v-model="password2">
+                        <label for="password2">Повторите пароль</label>
                     </div>
 
                     <div class="notification is-danger" v-if="errors.length">
@@ -85,6 +83,7 @@ export default {
     },
     methods: {
         async submitForm() {
+            this.$store.commit('setIsLoading', true)
             this.errors = []
             if (this.password1 === '') {
                 this.errors.push('The password is too short')
@@ -104,9 +103,9 @@ export default {
             if (this.student_group.length > 30) {
                 this.errors.push('Группа может не содержать более 30 символов')
             }
-            if ( /^\d\d\d-\d\d\d$/.test(this.student_group) === false) {
-                this.errors.push('Группа должна быть в формате 111-111, пример 191-363')
-            }
+            // if ( /^\d\d\d-\d\d\d$/.test(this.student_group) === false) {
+            //     this.errors.push('Группа должна быть в формате 111-111, пример 191-363')
+            // }
             if (this.password1 === '') {
                 this.errors.push('The password is too short')
             }

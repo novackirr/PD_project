@@ -22,7 +22,6 @@
                 </ul>
 
                 <template v-if="$store.state.isAuthenticated">
-                    <router-link to="/account" class="nav-link active">My account</router-link>
                     <button @click="logout()" class="btn btn-outline-success mx-2">Выйти</button>
                 </template>
 
@@ -53,10 +52,8 @@ export default {
                 
                 axios.defaults.headers.common['Authorization'] = ''
                 localStorage.removeItem('token')
-                localStorage.removeItem('username')
-                localStorage.removeItem('userid')
-                localStorage.removeItem('team_name')
-                localStorage.removeItem('team_id')
+                localStorage.removeItem('email')
+                localStorage.removeItem('id')
                 this.$store.commit('removeToken')
                 this.$router.push('/')
             }

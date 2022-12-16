@@ -6,10 +6,12 @@ import store from './store'
 import axios from "axios"
 import bootstrap from 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.css'
+import VueMathjax from 'vue-mathjax-next';
 
-createApp(App).use(store).use(router).mount('#app')
 
-axios.defaults.baseURL = 'http://192.168.0.103:8000/';
+createApp(App).use(VueMathjax).use(store).use(router).mount('#app')
+
+axios.defaults.baseURL = 'http://192.168.1.3:8000/';
 
 const app = createApp(App);
 
@@ -22,6 +24,7 @@ directives.forEach(directive => {
 // });
 
 app
+    .use(MathJax)
     .use(store)
     .use(router, axios, bootstrap)
     .mount("#app");

@@ -21,7 +21,10 @@ const routes = [
   {
     path: '/account',
     name: 'account',
-    component: Account
+    component: Account,
+    meta: {
+      requireLogin: true
+    }
   },
   {
     path: '/login',
@@ -34,6 +37,16 @@ const routes = [
     component: Register
   },
   {
+    path: '/verifyemail/',
+    name: 'verifyemail',
+    component: VerifyEmail
+  },
+  {
+    path: '/verifyemail/:uid/',
+    name: 'verifyemail',
+    component: VerifyEmail
+  },
+  {
     path: '/verifyemail/:uid/:token',
     name: 'verifyemail',
     component: VerifyEmail
@@ -43,6 +56,14 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requireLogin) && !store.state.isAuthenticated) {
+    next('/login')
+  } else {
+    next()
+  }
 })
 
 export default router

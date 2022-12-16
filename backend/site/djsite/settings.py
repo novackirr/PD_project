@@ -26,8 +26,18 @@ SECRET_KEY = 'django-insecure-l#+_diik@nb9n7e_*lj=xwi_c@m6m0id=72-3g09tq8h1f8au9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Frontend and Backend host urls
+SERVER_URL = '192.168.1.3'
+BACKEND_PORT = '8000'
+FRONTEND_PORT = '8080'
+HTTP_SET = 'http://'
+BACKEND_URL = HTTP_SET + SERVER_URL + ':' + BACKEND_PORT
+FRONTEND_URL = HTTP_SET + SERVER_URL + ':' + FRONTEND_PORT
+FRONTEND_EMAIL = SERVER_URL + ':' + FRONTEND_PORT
+
+
 ALLOWED_HOSTS = [
-    '192.168.0.103'
+    SERVER_URL
 ]
 
 
@@ -89,7 +99,7 @@ DATABASES = {
         'NAME': 'std_1544_pdproject',
         'USER': 'std_1544_pdproject',
         'PASSWORD': 'A01082002z',
-        'HOST': 'std-mysql',
+        'HOST': 'std-mysql.ist.mospolytech.ru',
         'PORT': '3306',
     }
 }
@@ -144,8 +154,8 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
-EMAIL_HOST_USER = 'ввести_сюда_свой_email'
-EMAIL_HOST_PASSWORD = 'пароль_от_приложения'
+EMAIL_HOST_USER = 'novacproject@yandex.ru'
+EMAIL_HOST_PASSWORD = 'tkaixqdzinxwgtaf'
 
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
@@ -154,8 +164,8 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
     'http://localhost:8080',
     'http://localhost:8000',
-    'http://192.168.0.103:8000',
-    'http://192.168.0.103:8080'
+    BACKEND_URL,
+    FRONTEND_URL
 
 )
 
@@ -169,4 +179,4 @@ CORS_ALLOW_METHODS = [
 ]
 
 
-DOMAIN_IN_EMAIL_MESSAGE = 'localhost:3000'
+DOMAIN_IN_EMAIL_MESSAGE = FRONTEND_EMAIL
