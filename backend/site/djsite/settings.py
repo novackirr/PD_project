@@ -96,8 +96,8 @@ WSGI_APPLICATION = 'djsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'std_1544_pdproject3',
-        'USER': 'std_1544_pdproject3',
+        'NAME': 'std_1544_pdproject4',
+        'USER': 'std_1544_pdproject4',
         'PASSWORD': 'A01082002z',
         'HOST': 'std-mysql.ist.mospolytech.ru',
         'PORT': '3306',
@@ -182,3 +182,7 @@ CORS_ALLOW_METHODS = [
 
 
 DOMAIN_IN_EMAIL_MESSAGE = FRONTEND_EMAIL
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

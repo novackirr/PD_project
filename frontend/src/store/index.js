@@ -19,11 +19,15 @@ export default createStore({
         state.isAuthenticated = true
         state.user.email = localStorage.getItem('email')
         state.user.id = localStorage.getItem('id')
+        state.user.role = localStorage.getItem('role')
+        state.user.email_verified = localStorage.getItem('email_verified')
       } else {
         state.token = ''
         state.isAuthenticated = false
         state.user.id = 0
         state.user.username = ''
+        state.user.role = ''
+        state.user.email_verified = ''
       }
     },
     setIsLoading(state, status) {
@@ -35,6 +39,8 @@ export default createStore({
     },
     removeToken(state) {
       state.token = ''
+      state.user.role = ''
+      state.user.email_verified = ''
       state.isAuthenticated = false
     },
     setUser(state, user) {

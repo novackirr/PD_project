@@ -146,11 +146,12 @@ class UserProfile(APIView):
                         'role': str(role),
                         'middle_name': user.middle_name,
                         'email': user.email, 
-                        'student_group': user.student_group
+                        'student_group': user.student_group,
+                        'email_verified': user.email_verified
                     }
         return Response(user_data)
 
-class UsersListHasNoOption(APIView):
+class StudentsListHaveNoOption(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsEmailVerifedAndUserAuth, IsTeacher]
 
@@ -166,3 +167,29 @@ class UsersListHasNoOption(APIView):
                         .filter(~Q(student_group='') & ~Q(id__in=users_id_have_option))
                         .values('id', 'email', 'first_name', 'middle_name', 'last_name', 'student_group'))
         return JsonResponse({'data': users_list})
+
+class StudentsListHaveOption(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsEmailVerifedAndUserAuth, IsTeacher]
+
+    def post(self, request):
+        groups = []
+        for a in request.user.groups.values_list('name'):
+            groups += [a[0]]
+        users_list = list(Option.objects.all().select_related('user')
+                        .filter(~Q(user__student_group=''))
+                        .values('id', 'decision', 'user__email', 'user__first_name', 'user__middle_name', 'user__last_name', 'user__student_group'))
+        return JsonResponse({'data': users_list})
+
+class StudenTestDecision(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsEmailVerifedAndUserAuth]
+
+    def post(self, request):
+        try:
+            option = Option.objects.all().get(user=request.user)
+        except:
+            return Response({'message': 'Ваш вариант не сгенерирован!'})
+        if option.decision == '':
+            return Response({'message': 'Вы ещё не отправили ответ'})
+        return Response({'filename': option.decision.url, 'created': option.created})

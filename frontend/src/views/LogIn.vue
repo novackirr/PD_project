@@ -20,7 +20,6 @@
                         <div class="control">
                             <button type="submit" class="btn btn-primary">Войти</button>
                         </div>
-                        <div> {{tokeno}}</div>
                     </div>
                 </form>
             </div>
@@ -66,7 +65,7 @@
                         this.$store.commit('setToken', token)
                         axios.defaults.headers.common['Authorization'] = 'Token ' + token
                         localStorage.setItem('token', token)
-                        this.$router.push('/account')
+                        // this.$router.push('/account')
                     })
                     .catch(error => {
                         if (error.message) {
@@ -74,8 +73,45 @@
                             this.errors.push('Неверный логин или пароль!')
                         }
                     })
+
+                await axios
+                    .get('/users/profile/', {
+                            headers: {'Authorization': 'Token ' + this.$store.state.token}
+                    })
+                    .then(response => {
+                        this.$store.commit('setUser', {
+                            'id': response.data.id,
+                            'role': response.data.role,
+                            'email_verified': response.data.email_verified,
+                        })
+                        localStorage.setItem('id', response.data.id)
+                        localStorage.setItem('role', response.data.role)
+                        localStorage.setItem('email_verified', response.data.email_verified)
+                        this.$router.push('/account')
+                    })
+                    .catch(error => {
+                        if (error.message) {
+                            console.log(error)
+                        }
+                    })
                 this.$store.commit('setIsLoading', false)
             }
+            // async getClient() {
+            //     this.$store.commit('setIsLoading', true)
+            //     await axios
+            //         .get('/users/profile/', {
+            //             headers: {'Authorization': 'Token ' + this.$store.state.token}
+
+            //         })
+            //         .then(response => {
+            //             this.profile = response.data
+            //         })
+            //         .catch(error => {
+            //             console.log(error)
+            //         })
+
+            //     this.$store.commit('setIsLoading', false)
+            // }
         }
     }
 </script>

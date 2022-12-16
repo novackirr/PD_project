@@ -15,6 +15,7 @@
                 <p class="fw-normal fs-5">Реализована валидация вводимых данных</p>
                 <p class="fw-normal fs-5">Реализована авторизация студента или преподавателя</p>
                 <p class="fw-normal fs-5">Создан генератор заданий с четырьмя уровнями сложности</p>
+                <p class="fw-normal fs-5">Реализована генерация заданий и вывод этих заданий</p>
             </div>
         </div>
 
@@ -40,7 +41,7 @@
                 </router-link>
             </li>
             <li class="nav-item">
-                <router-link to="/signin" class="nav-link">
+                <router-link to="/login" class="nav-link">
                     Войти
                 </router-link>
             </li>

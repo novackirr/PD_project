@@ -19,17 +19,17 @@
                             О сайте
                         </router-link>
                     </li>
-                    <li class="nav-item">
+                    <li v-if="$store.state.isAuthenticated" class="nav-item">
                         <router-link to="/account" class="nav-link active">
                             Мой аккаунт
                         </router-link>
                     </li>
-                    <li class="nav-item">
+                    <li v-if="$store.state.user.role === 'Преподаватель'" class="nav-item">
                         <router-link to="/studentsdo" class="nav-link active">
                             Студенты
                         </router-link>
                     </li>
-                    <li v-if="$store.state.isAuthenticated" class="nav-item">
+                    <li v-if="$store.state.user.role === 'Студент'" class="nav-item">
                         <router-link to="/generate" class="nav-link active">
                             Генератор
                         </router-link>
@@ -68,9 +68,11 @@ export default {
                 axios.defaults.headers.common['Authorization'] = ''
                 localStorage.removeItem('token')
                 localStorage.removeItem('email')
-                localStorage.removeItem('id')
+                localStorage.removeItem('role')
+                localStorage.removeItem('email_verified')
                 this.$store.commit('removeToken')
                 this.$router.push('/')
+
             }
     }
 }

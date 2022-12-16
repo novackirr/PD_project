@@ -2,9 +2,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-avatar@latest/dist/avatar.min.css" rel="stylesheet">
     <div class="Generate">
         <h1 class="title mb-3">Генератор заданий</h1>
+        {{ isFileUploading }}
 
         <div v-if="isEmail">
-            {{isEmail}}
+            {{ isEmail }}
         </div>
 
         <div v-if="tasks.message === 'Извините для вас тест не сгенерирован!'">
@@ -18,28 +19,58 @@
             <p>Для вас уже доступен сгенерированный вариант</p>
         </div>
 
-        <div v-if="tasks.message !== 'Извините для вас тест не сгенерирован!' && isEmail === ''" class="card">
-            <div class="card-body">
-                <h3 class="card-title">Сгенерированный вариант</h3>
-                <div v-for="task in tasks.data">
-                    <div class="card mt-4">
-                        <div class="card-body">
-                            <h5 class="card-subtitle mb-2 text-muted">Задание {{ task.task_number }}</h5>
-                            <ul class="list-group list-group-flush">
+        <div v-if="tasks.message !== 'Извините для вас тест не сгенерирован!' && isEmail === ''">
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Отправка ответа</h3>
+                    <div v-if="fileUploading !== 'http://192.168.1.3:8000/test_generatorundefined'">
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <div>Файл уже загружен</div>
+                            </li>
+                            <li class="list-inline-item">
+                                <a :href="fileUploading">Решение</a>
+                            </li>
+                            <div>Вы можете обновить свой ответ, отправив новый файл.</div>
+                        </ul>
+                        
+                    </div>
 
-                                <li class="list-group-item">
-                                    <h5 class="card-title">Необходимо вычислить</h5>
-                                    <div class="d-flex justify-content-center mt-5">
-                                        <vue-mathjax :formula="'$$' + task.example + '$$'"></vue-mathjax>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
+
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="file" ref="file" v-on:change="handleFileUpload()">
+                        <button class="btn btn-outline-secondary" type="button" @click="submitFile()">
+                            Отправить ответ
+                        </button>
+                    </div>
+                    <div class="mt-2">
+                        {{fileUploadingMessage}}
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h3 class="card-title">Сгенерированный вариант</h3>
+                    <div v-for="task in tasks.data">
+                        <div class="card mt-4">
+                            <div class="card-body">
+                                <h5 class="card-subtitle mb-2 text-muted">Задание {{ task.task_number }}</h5>
+                                <ul class="list-group list-group-flush">
+
+                                    <li class="list-group-item">
+                                        <h5 class="card-title">Необходимо вычислить</h5>
+                                        <div class="d-flex justify-content-center mt-5">
+                                            <vue-mathjax :formula="'$$' + task.example + '$$'"></vue-mathjax>
+                                        </div>
+                                    </li>
+                                    <!-- <li class="list-group-item">
                                     <h5 class="card-title">Ответ</h5>
                                     <div class="d-flex justify-content-center mt-5">
                                         <vue-mathjax :formula="'$$' + task.answer + '$$'"></vue-mathjax>
                                     </div>
-                                </li>
-                            </ul>
+                                </li> -->
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -60,13 +91,62 @@ export default {
             tokeno: '',
             isGeneratedTasks: false,
             processGenerate: '',
-            isEmail: ''
+            isEmail: '',
+            file: '',
+            isFileUploading: '',
+            fileUploading: '',
+            fileUploadingMessage: ''
         }
     },
     mounted() {
-        this.getTask()
+        this.getTask(),
+            this.isFileUpload()
     },
     methods: {
+        async isFileUpload() {
+            this.$store.commit('setIsLoading', true)
+            await axios
+                .post('/users/student_decision/', {
+                    headers: { 'Authorization': 'Token ' + this.$store.state.token }
+                })
+                .then(response => {
+                    this.fileUploading = 'http://192.168.1.3:8000/test_generator' + response.data.filename
+                })
+                .catch(error => {
+                    if (error.response) {
+                        this.isFileUploading = error.response.data.message
+                    }
+                    console.log(error)
+                })
+            this.$store.commit('setIsLoading', false)
+        },
+
+        async submitFile() {
+            this.$store.commit('setIsLoading', true)
+            let formData = new FormData();
+            formData.append('decision', this.file);
+            await axios
+                .post('/test_generator/upload_decision/',
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                ).then(response => {
+                    this.fileUploadingMessage = response.data.message
+                    this.isFileUpload()
+                })
+                .catch(error => {
+                    if (error.response) {
+                        this.fileUploadingMessage = error.response.data.message
+                    }
+                });
+                this.$store.commit('setIsLoading', false)
+        },
+        handleFileUpload() {
+            this.file = this.$refs.file.files[0];
+        },
         async getTask() {
             this.$store.commit('setIsLoading', true)
             await axios
@@ -78,7 +158,7 @@ export default {
                     this.isGeneratedTasks = true
                 })
                 .catch(error => {
-                    if (error.response){
+                    if (error.response) {
                         this.isEmail = error.response.data.detail
                     }
                     console.log(error)

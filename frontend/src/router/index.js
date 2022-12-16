@@ -9,6 +9,8 @@ import Generate from '@/views/Generate.vue'
 import StudentsDo from '@/views/StudentsDo.vue'
 import store from "@/store"
 
+const media = { template: '<div>media</div>'}
+
 const routes = [
   {
     path: '/',
@@ -68,6 +70,11 @@ const routes = [
     path: '/verifyemail/:uid/:token',
     name: 'verifyemail',
     component: VerifyEmail
+  },
+  { 
+    path: '/media',
+    beforeEnter() {location.href = 'http://192.168.1.3:8000/test_generator/media/'},
+    component: media
   }
 ]
 

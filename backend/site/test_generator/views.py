@@ -5,16 +5,16 @@ from rest_framework.authentication import TokenAuthentication
 from .GenDiffreal import Task1, Task2, Task3, Task4, Task5, Task6, Task7, Task8, rgr_gen
 from .models import Option, Task
 from rest_framework.response import Response
-from test_generator.serializers import TaskSerializer
+from test_generator.serializers import TaskSerializer, OptionFileSerializer
 from django.core import serializers
 from django.http import JsonResponse
 from time import time
+from rest_framework.parsers import MultiPartParser, FileUploadParser
 # Create your views here.
 
 class TestGenerate(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsEmailVerifedAndUserAuth]
-
     def post(self, request):
         print(time())
         user = request.user
@@ -38,12 +38,9 @@ class TestGenerate(APIView):
             responce.update({task.id: {'task_number': task.task_number, 'example': task.example, 'answer': task.answer}})
         print(time())
         return Response(responce)
-
-
 class TestShow(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsEmailVerifedAndUserAuth]
-
     def post(self, request):
         try:
             option = Option.objects.get(user=request.user)
@@ -52,3 +49,18 @@ class TestShow(APIView):
         tasks = TaskSerializer(data=list(Task.objects.all().filter(option=option).values('task_number', 'example', 'answer')), many=True)
         tasks.is_valid()
         return Response({'data' : tasks.validated_data})
+
+
+class TestFileUploadView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsEmailVerifedAndUserAuth]
+
+
+    def post(self, request):
+        file_obj = {'decision': request.FILES['decision']}
+        serializer = OptionFileSerializer(instance=Option.objects.get(user=request.user), data=file_obj)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Ответ успешно сохранён!'})
+        else:
+            return Response({'message': 'Что-то пошло не так!'})

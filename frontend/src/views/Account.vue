@@ -1,5 +1,6 @@
 <template>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-avatar@latest/dist/avatar.min.css" rel="stylesheet">
+    <h1 class="mb-3">Информация об аккаунте</h1>
     <div class="Account">
         <!-- <div class="card" style="width: 18rem;"></div> -->
         <div>
@@ -50,21 +51,6 @@ export default {
             this.getClient()
         },
         methods: {
-            async deleteClient() {
-                
-                this.$store.commit('setIsLoading', true)
-                const clientID = this.$route.params.id
-                await axios
-                    .post(`/api/v1/clients/delete_client/${clientID}/`)
-                    .then(response => {
-                        console.log(response.data)
-                        this.$router.push('/dashboard/clients')
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-                this.$store.commit('setIsLoading', false)
-            },
             async getClient() {
                 this.$store.commit('setIsLoading', true)
                 await axios
